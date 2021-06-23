@@ -4,7 +4,7 @@ Designing RESTful API with Python-Flask and MongoDB using health_monitoring data
 
 This example project demonstrate how to design RESTful API with Python-Flask and MongoDB.    
 
- You can download the project this project by cloning the repository:     
+ You can download this project by cloning the repository:     
 
 # Get the project code
 git clone https://github.com/padmapria/health_monitoring_Flask_App.git    
