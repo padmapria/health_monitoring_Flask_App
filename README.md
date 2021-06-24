@@ -45,15 +45,21 @@ Once the application is started, go to localhost on Postman to test the API.
 select basic authentication and provide a valid username and password. Username and password should passed in the basic authentication to test all the 3 APIs.     
  
 ### To Test Authentication (Get Request)   
-127.0.0.1:5000/rest-auth       
+127.0.0.1:5000/rest-auth    
+
+[![auth-postman.jpg](https://i.postimg.cc/1txqFfCP/auth-postman.jpg)](https://postimg.cc/GBQtwhnS)
 
 ### To get Summary (Post Request).    
 The input payload should be passed via the request body. Use the request payload attached in this repository   
 127.0.0.1:5000/summary    
 
+[![summary-postman.jpg](https://i.postimg.cc/44VYDf8H/summary-postman.jpg)](https://postimg.cc/V5ssM8Pz)
+
+
 ### To get rank (Get Request)
 127.0.0.1:5000/rank 
 
+[![rank-postman.jpg](https://i.postimg.cc/tCrpf8HV/rank-postman.jpg)](https://postimg.cc/XpyRBHqV)
 
       
 # To manually do the steps given in the steps 1 to 4, follow the below
