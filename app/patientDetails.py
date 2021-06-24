@@ -15,8 +15,16 @@ import logging
 
 app = Flask(__name__)    # Construct an instance of Flask class for our webapp)
 
+#Logs are generated in a seperate log folder
+def level_down(path):
+    proj_path= os.path.split(path)[0]
+    log_dir=os.path.join(proj_path, 'logs')
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    return log_dir
+    
 logFormatStr = '%(asctime)s  %(levelname)s - %(message)s'
-logging.basicConfig(filename=path + '\logOne.log', format=logFormatStr, level=logging.INFO), logging.info('Application started')
+logging.basicConfig(filename=level_down(path) + '\logFile.log', format=logFormatStr, level=logging.INFO), logging.info('Application started')
 
 
 #Enable basic Authentication
@@ -34,7 +42,7 @@ user_id=None
     
 @auth.verify_password
 def authenticate(username, password):
-    logging.info('Test logging authenticate')
+    logging.info('Test logging authenticate for every rest call')
     if username and password:
         myquery2= ({"username": username, "password": password})
         patient_record_fetched = patient_collection.find_one(myquery2)
