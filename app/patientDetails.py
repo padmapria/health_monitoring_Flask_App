@@ -8,8 +8,19 @@ from PatientSummary import PatientSummary
 from bson.json_util import dumps
 import ast,json
 from datetime import datetime
+import os # for Cwd path 
+path = os.getcwd()
+import logging
+from logging.handlers import RotatingFileHandler
+from logging import handlers
+    
+#from dateutil import parser
 
 app = Flask(__name__)    # Construct an instance of Flask class for our webapp)
+
+logFormatStr = '%(asctime)s  %(levelname)s - %(message)s'
+logging.basicConfig(filename=path + '\logOne.log', format=logFormatStr, level=logging.INFO), logging.info('Application started')
+
 
 #Enable basic Authentication
 auth = HTTPBasicAuth()
@@ -24,11 +35,9 @@ daily_activity=db.daily_activity_summary
 #Declaring the global variable to set Authenticated user as default user
 user_id=None
     
-'''
-    method to fetch userdetails authentication
-'''
 @auth.verify_password
 def authenticate(username, password):
+    logging.info('Test logging authenticate')
     if username and password:
         myquery2= ({"username": username, "password": password})
         patient_record_fetched = patient_collection.find_one(myquery2)
@@ -40,7 +49,6 @@ def authenticate(username, password):
             global user_id
             user_id=patient_record_fetched["_id"]
             return True
-              
         
 '''
     utility method to test authentication
@@ -49,8 +57,8 @@ def authenticate(username, password):
 @auth.login_required
 def get_response():        
     return "Hello, %s!" % auth.current_user()
-    
-    
+        
+
 '''
     Rest Endpoint to get patient Summary
 '''
@@ -83,9 +91,54 @@ def get_summary():         # URL '/' to be handled by main() route handler
         
         obj = PatientSummary(daily_summary['steps'],daily_summary['distance'],daily_summary['calories'],daily_summary['duration'] )
         print("******** Fetched the daily activity summary")
-        return json.dumps(obj, default=obj2Json_summary)   
+        return json.dumps(obj, default=obj2Json_summary) 
         
+'''
+    Rest Endpoint to get patient list in the descending order based on the total steps accumulated
+'''       
+#https://dba.stackexchange.com/questions/243947/join-two-collections-with-group-by-and-sum-in-mongodb
+#https://stackoverflow.com/questions/42273228/join-and-sort-data-in-mongodb-php
+@app.route('/rank')
+@auth.login_required
+def get_rank():         # URL '/' to be handled by main() route handler
+    
+    print("##### Fetching the total steps for all the users in descending order")
+    output = []
+    agg_result= daily_activity.aggregate(
+    [{
+    "$lookup" : 
+        {"from":"patient",
+         "localField":"patient",
+         "foreignField":"_id",
+         "as":"patientDetails"
+        }
+    },
+    {   
+        "$unwind":"$patientDetails"
+    }, 
+    {    
+    "$group" : 
+        {"_id" : "$patientDetails.username", 
+         "num_steps" : 
+            {
+                "$sum" : "$steps" }
+            }
+        },
+        {
+            "$sort" : { "num_steps" : -1 }
+        }
         
+    ])
+    
+    for i in agg_result:
+        print(i)
+        output.append(i["_id"])
+        
+    print("##### Fetched the total steps for "+ str(len(output)) +" users")
+
+    return dumps(output)
+
+
 #utility method to convert object to json
 def obj2Json_summary(obj):
     return {
@@ -94,6 +147,6 @@ def obj2Json_summary(obj):
         "calorieBurn":obj.calorieBurn,
         "activeMins": obj.activeMins
         }
-        
+    
 if __name__ == '__main__':  # Script executed directly?
     app.run()  # Launch built-in web server and run this Flask webapp
