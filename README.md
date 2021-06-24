@@ -42,12 +42,13 @@ NOTE: While working with Python, its recommended to use virtual environment to k
 ## Test the application
 Once the application is started, go to localhost on Postman to test the API.
  
-select basic authentication and provide username and password. Username and password is passed in the basic authentication to tell all the 3 APIs.     
+select basic authentication and provide a valid username and password. Username and password should passed in the basic authentication to test all the 3 APIs.     
  
-### To Test Authentication (Get Request),
+### To Test Authentication (Get Request)   
 127.0.0.1:5000/rest-auth       
 
-### To get Summary (Post Request) . The input payload should be passed from the request body) use the rquest payload attached in this repository   
+### To get Summary (Post Request).    
+The input payload should be passed via the request body. Use the request payload attached in this repository   
 127.0.0.1:5000/summary    
 
 ### To get rank (Get Request)
