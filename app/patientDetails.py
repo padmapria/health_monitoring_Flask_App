@@ -11,9 +11,6 @@ from datetime import datetime
 import os # for Cwd path 
 path = os.getcwd()
 import logging
-from logging.handlers import RotatingFileHandler
-from logging import handlers
-    
 #from dateutil import parser
 
 app = Flask(__name__)    # Construct an instance of Flask class for our webapp)
